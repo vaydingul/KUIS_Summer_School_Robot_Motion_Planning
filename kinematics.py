@@ -1,6 +1,8 @@
 import numpy as np
 from utils import cosd,sind
 
+# ! DON'T USE IT
+
 def inverse_kinematics(x, y, L1 = 38, L2 = 38, robot_base_x=20, robot_base_y=0):
     solutions = [0, 0]
     x = x - robot_base_x
@@ -16,6 +18,10 @@ def inverse_kinematics(x, y, L1 = 38, L2 = 38, robot_base_x=20, robot_base_y=0):
         psi = np.atan2(np.sqrt(1 - c_psi ** 2),c_psi)
         theta1 = [beta + psi, beta - psi]
         solutions = [theta1, theta2]
+
+        
+
+    
     return solutions
 
 

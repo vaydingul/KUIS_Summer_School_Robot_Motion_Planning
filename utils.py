@@ -23,7 +23,7 @@ def forward_kinematics(theta1, theta2):
     return position
 
 
-def inverse_kinematics(x, y):
+def inverse_kinematics(x, y, elbow_up = True):
     solutions = [0, 0]
     x = x - CONFIG["robot_base_x"]
     y = y - CONFIG["robot_base_y"]
@@ -33,12 +33,15 @@ def inverse_kinematics(x, y):
         c_2 = (x ** 2 + y ** 2 - CONFIG["link_1_length"] ** 2 - CONFIG["link_2_length"] ** 2) / (
                 2 * CONFIG["link_1_length"] * CONFIG["link_2_length"])
         s_2 = np.sqrt(1 - c_2 ** 2)
-        theta2 = [np.atan2(-s_2, c_2), np.atan2(s_2, c_2)]
+        theta2 = np.array([np.arctan2(-s_2, c_2), np.arctan2(s_2, c_2)])
 
-        beta = np.atan2(y, x)
+        beta = np.arctan2(y, x)
         c_psi = (x ** 2 + y ** 2 + CONFIG["link_1_length"] ** 2 - CONFIG["link_2_length"] ** 2) / (
                 2 * CONFIG["link_1_length"] * np.sqrt(x ** 2 + y ** 2))
-        psi = np.atan2(np.sqrt(1 - c_psi ** 2), c_psi)
-        theta1 = [beta + psi, beta - psi]
-        solutions = [theta1, theta2]
-    return solutions
+        psi = np.arctan2(np.sqrt(1 - c_psi ** 2), c_psi)
+        theta1 = np.array([beta + psi, beta - psi])
+        solutions = np.vstack([theta1, theta2])
+
+    solution = solutions[:, 1] if elbow_up else solutions[:, 0]
+
+    return solution

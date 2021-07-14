@@ -17,3 +17,4 @@ CONFIG = {"link_1_length": 38,
           "attraction_gain": 1,
           "repulsion_gain": 1000,
           "repulsion_threshold_distance": 10}
+
