@@ -23,9 +23,9 @@ def calculate_potential_map(collision_map, alpha_values, beta_values):
 
     attraction_distances = np.sum((map_grid - goal_theta_degree) ** 2, axis=1)
 
-    attractive_potential = 0.5 * CONFIG["attraction_gain"] * attraction_distances
+    attractive_potentials = 0.5 * CONFIG["attraction_gain"] * attraction_distances
 
-    potential_map = repulsive_potential + attractive_potential
+    potential_map = repulsive_potential + attractive_potentials
 
     # TODO: Change it!
     potential_map[potential_map == np.inf] = potential_map[np.where(np.isinf(potential_map),-np.Inf,potential_map).argmax()]

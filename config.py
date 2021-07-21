@@ -16,5 +16,6 @@ CONFIG = {"link_1_length": 38,
           "goal_elbow_up": True,
           "attraction_gain": 1,
           "repulsion_gain": 1000,
-          "repulsion_threshold_distance": 10}
+          "repulsion_threshold_distance": 10,
+          "trajectory_proximity_threshold": 0.1}
 

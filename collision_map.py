@@ -15,7 +15,7 @@ def create_collision_map():
 
         for beta in beta_values:
 
-            print("Alpha = {} \nBeta = {}".format(alpha, beta))
+            print("Alpha = {}\tBeta = {}".format(alpha, beta), end='\r')
             is_point_collided = False  # Set this to false for every alpha-beta pair
 
             for link_1 in link_1_values:  # Collision check for link 1
