@@ -39,4 +39,4 @@ def draw_potential_map(potential_map, alpha_values, beta_values):
     alpha_grid, beta_grid = np.meshgrid(alpha_values, beta_values)
     #ax = plt.axes(projection='3d')
     plt.contour(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T, 60, cmap='hot')
-    plt.show()
+    #plt.show()
