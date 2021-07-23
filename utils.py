@@ -1,7 +1,6 @@
 import numpy as np
 from config import *
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 def cosd(angle_degree):
 	"""
@@ -76,16 +75,24 @@ def inverse_kinematics(x, y, elbow_up = True):
 	return solution
 
 def draw_collision_map(collision_map):
-	
-	#plt.figure()
-	#plt.scatter(collision_map[:, 0], collision_map[:, 1], s = 5, c = "red", )
-	sns.scatterplot(x = collision_map[:, 0], y = collision_map[:, 1])
 
+	fig, ax = plt.subplots()
+	ax.scatter(collision_map[:, 0], collision_map[:, 1], s = 5, c = "red", alpha = 0.5, marker = "s")
+	ax.set_title("Collision Map")
+	ax.set_xlabel("Alpha")
+	ax.set_ylabel("Beta")
 
 def draw_potential_map(potential_map, alpha_values, beta_values):
-
-	#plt.figure()
-	alpha_grid, beta_grid = np.meshgrid(alpha_values, beta_values)
+	
+	#fig = plt.figure()
 	#ax = plt.axes(projection='3d')
-	#plt.contour(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T, 60, cmap='hot')
-	#sns.heatmap(x = alpha_values, y = beta_values, z = potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T)
+	fig, ax = plt.subplots()
+	alpha_grid, beta_grid = np.meshgrid(alpha_values, beta_values)	
+	c = ax.contour(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T, levels = 200)
+	#c = ax.contour3D(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T, levels = 200)
+
+	#ax.clabel(c)
+	fig.colorbar(c)
+	ax.set_title("Potential Map")
+	ax.set_xlabel("Alpha")
+	ax.set_ylabel("Beta")

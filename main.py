@@ -10,6 +10,8 @@ from config import *
 
 if __name__ == "__main__":
 		
+		#plt.style.use('classic')
+
 		collision_map, alpha_axis, beta_axis = calculate_collision_map()
 
 		draw_collision_map(collision_map)
