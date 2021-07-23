@@ -9,6 +9,7 @@ from config import *
 
 
 if __name__ == "__main__":
+		
 		collision_map, alpha_axis, beta_axis = create_collision_map()
 
 		plt.scatter(collision_map[:, 0], collision_map[:, 1], cmap='hot')
