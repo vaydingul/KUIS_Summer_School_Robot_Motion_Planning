@@ -66,9 +66,9 @@ def calculate_collision_map():
 			# Whether the point is colliding with any of the boundary conditions
 			is_point_collided = is_inside_circle(px, py, CONFIG["obstacle_x"], CONFIG["obstacle_y"], CONFIG["obstacle_radius"] + CONFIG["rubber_band"]) or (px < 0) or (py < 0) or (py > 100) or (px > 100) 
 
-		if is_point_collided:  
-			# If the link 2 violates any of the boundary conditions, terminate the link 2 check
-			break
+			if is_point_collided:  
+				# If the link 2 violates any of the boundary conditions, terminate the link 2 check
+				break
 
 		if is_point_collided:  
 		# If link 2 collides with the given alpha-beta pair, then go for the next pair

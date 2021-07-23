@@ -1,6 +1,7 @@
 import numpy as np
 from config import *
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 def cosd(angle_degree):
 	"""
@@ -73,3 +74,18 @@ def inverse_kinematics(x, y, elbow_up = True):
 		solution = solutions[:, 1] if elbow_up else solutions[:, 0]
 
 	return solution
+
+def draw_collision_map(collision_map):
+	
+	#plt.figure()
+	#plt.scatter(collision_map[:, 0], collision_map[:, 1], s = 5, c = "red", )
+	sns.scatterplot(x = collision_map[:, 0], y = collision_map[:, 1])
+
+
+def draw_potential_map(potential_map, alpha_values, beta_values):
+
+	#plt.figure()
+	alpha_grid, beta_grid = np.meshgrid(alpha_values, beta_values)
+	#ax = plt.axes(projection='3d')
+	#plt.contour(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T, 60, cmap='hot')
+	#sns.heatmap(x = alpha_values, y = beta_values, z = potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T)
