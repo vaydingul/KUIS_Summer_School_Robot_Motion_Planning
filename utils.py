@@ -1,6 +1,8 @@
 import numpy as np
 from config import *
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
 
 def cosd(angle_degree):
 	"""
@@ -77,22 +79,38 @@ def inverse_kinematics(x, y, elbow_up = True):
 def draw_collision_map(collision_map):
 
 	fig, ax = plt.subplots()
+	
 	ax.scatter(collision_map[:, 0], collision_map[:, 1], s = 5, c = "red", alpha = 0.5, marker = "s")
 	ax.set_title("Collision Map")
 	ax.set_xlabel("Alpha")
 	ax.set_ylabel("Beta")
 
-def draw_potential_map(potential_map, alpha_values, beta_values):
-	
-	#fig = plt.figure()
-	#ax = plt.axes(projection='3d')
-	fig, ax = plt.subplots()
-	alpha_grid, beta_grid = np.meshgrid(alpha_values, beta_values)	
-	c = ax.contour(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T, levels = 200)
-	#c = ax.contour3D(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T, levels = 200)
+	return fig
 
-	#ax.clabel(c)
+def draw_potential_map(potential_map, alpha_values, beta_values):
+
+	fig, ax = plt.subplots()
+
+	alpha_grid, beta_grid = np.meshgrid(alpha_values, beta_values)	
+	c = ax.contour(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T, cmap=cm.magma, levels = 200)
 	fig.colorbar(c)
 	ax.set_title("Potential Map")
 	ax.set_xlabel("Alpha")
 	ax.set_ylabel("Beta")
+
+	return fig
+
+def draw_potential_map_3d(potential_map, alpha_values, beta_values):
+	
+	fig = plt.figure()
+	ax = Axes3D(fig)
+	fig.add_axes(ax)
+
+	alpha_grid, beta_grid = np.meshgrid(alpha_values, beta_values)	
+	c = ax.plot_surface(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).	T, cmap=cm.magma, linewidth=0, antialiased=True)
+	fig.colorbar(c)
+	ax.set_title("Potential Map")
+	ax.set_xlabel("Alpha")
+	ax.set_ylabel("Beta")
+
+	return fig
