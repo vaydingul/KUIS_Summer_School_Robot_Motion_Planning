@@ -85,7 +85,7 @@ def draw_collision_map(collision_map):
 	ax.set_xlabel("Alpha")
 	ax.set_ylabel("Beta")
 
-	return fig
+	return fig, ax
 
 def draw_potential_map(potential_map, alpha_values, beta_values):
 
@@ -98,7 +98,7 @@ def draw_potential_map(potential_map, alpha_values, beta_values):
 	ax.set_xlabel("Alpha")
 	ax.set_ylabel("Beta")
 
-	return fig
+	return fig, ax
 
 def draw_potential_map_3d(potential_map, alpha_values, beta_values):
 	
@@ -113,4 +113,4 @@ def draw_potential_map_3d(potential_map, alpha_values, beta_values):
 	ax.set_xlabel("Alpha")
 	ax.set_ylabel("Beta")
 
-	return fig
+	return fig, ax
