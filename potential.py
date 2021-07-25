@@ -22,16 +22,11 @@ def calculate_potential_map(collision_map, alpha_values, beta_values):
     # is whole map of our configuration space.
     # Keep in mind that we can query more than one point at the same time. 
     distances, _ = kdt.query(map_grid)
-    
-    # Setting the configuration parameter to a local variable for ease of use
-    p0 = CONFIG['repulsion_threshold_distance']
-    
-    # If a distance is larger than a threshold, then its effect is very minimal
-    # as if it is at a inifinite distance.
-    distances[distances > p0] = np.inf
-
+        
     # Calculate the repulsive potential given by the formula
-    repulsive_potential = 0.5 * p0 * np.power((1 / distances) - (1 / p0), 2) 
+    repulsive_potential = 0.5 * CONFIG['repulsion_threshold_distance'] * np.power((1 / distances) - (1 / CONFIG['repulsion_threshold_distance']), 2) 
+    # If a distance is larger than a threshold, then its effect is zero
+    repulsive_potential[distances > CONFIG['repulsion_threshold_distance']] = 0
 
     # Calculate the corresponding joint angles for the goal world coordinates
     goal_theta_degree = np.rad2deg(inverse_kinematics(CONFIG["goal_x"], CONFIG["goal_y"], elbow_up=CONFIG['goal_elbow_up']))
