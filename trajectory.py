@@ -2,7 +2,7 @@ import numpy as np
 from config import *
 from scipy.spatial import KDTree
 
-def calculate_trajectory(trajectory_start: np.ndarray, trajectory_goal: np.ndarray, collision_map: np.ndarray):
+def calculate_trajectory_via_search(trajectory_start: np.ndarray, trajectory_goal: np.ndarray, collision_map: np.ndarray):
     """
     It calculates the trajectory via searching the minimum potentials points, exhaustively.
     """
@@ -36,10 +36,10 @@ def calculate_trajectory(trajectory_start: np.ndarray, trajectory_goal: np.ndarr
         # Then, find the distances which are from the point cloud to query point, which 
         # is whole map of our configuration space.
         # Keep in mind that we can query more than one point at the same time. 
-        distances, _ = kdt.query(local_map_grid)
+        distances, _ = kdt.query(local_map_grid, workers=4)
 
         # Calculate the repulsive potential given by the formula
-        local_repulsive_potentials = 0.5 * CONFIG['repulsion_threshold_distance'] * np.power((1 / distances) - (1 / CONFIG['repulsion_threshold_distance']), 2) 
+        local_repulsive_potentials = 0.5 * CONFIG['repulsion_gain'] * np.power((1 / distances) - (1 / CONFIG['repulsion_threshold_distance']), 2) 
         # If a distance is larger than a threshold, then its effect is zero
         local_repulsive_potentials[distances > CONFIG['repulsion_threshold_distance']] = 0 
 
@@ -63,5 +63,60 @@ def calculate_trajectory(trajectory_start: np.ndarray, trajectory_goal: np.ndarr
         
         # Increase the counter
         idx = idx + 1
+    # Return the trajectory
+    return trajectory
+
+
+    
+def calculate_trajectory_via_force_propagation(trajectory_start: np.ndarray, trajectory_goal: np.ndarray, collision_map: np.ndarray, step_size = 2):
+    """
+    It calculates the trajectory via propagating the force, which is calculated by the negative gradient of the potential.
+    (Like gradient descent!)
+    """
+    
+    # Initialization of the counter
+    idx = 0
+
+
+    # Initialize the trajectory with the starting point
+    trajectory = np.array(trajectory_start,)
+    trajectory = np.reshape(trajectory, (1, 2))
+    
+    # Initialize the checker variable
+    is_trajectory_not_finished = True
+
+    while is_trajectory_not_finished:
+        
+        
+        # Initialize a KDTree object via feeding the subject point cloud, which is the
+        # collision map
+        kdt = KDTree(collision_map)
+        # Then, find the distances which are from the point cloud to query point, which 
+        # is whole map of our configuration space.
+        # Keep in mind that we can query more than one point at the same time. 
+        distance, ix_obstacle = kdt.query(trajectory[-1], workers=4)
+
+        # Calculate the repulsive potential given by the formula
+        local_repulsive_force = CONFIG['repulsion_gain'] * ((1 / distance) - (1 / CONFIG['repulsion_threshold_distance'])) * (distance ** (-2)) * (2 * (trajectory[-1] - collision_map[ix_obstacle]))   
+        # If a distance is larger than a threshold, then its effect is zero
+        local_repulsive_force[distance > CONFIG['repulsion_threshold_distance']] = 0 
+
+        # Calculate the attractive force as if it is a spring acted on a mass
+        local_attractive_force = -CONFIG["attraction_gain"] * (trajectory[-1] - trajectory_goal);
+
+        # Calculate the total potentials by summing up repulsive and attractive potential
+        local_force = local_repulsive_force + local_attractive_force
+
+        trajectory_new = trajectory[-1] + step_size * local_force / np.linalg.norm(local_force)         
+        
+        # Add this point to the trajectory
+        trajectory = np.vstack((trajectory,trajectory_new))
+
+        # Check whether the desired state is reached
+        is_trajectory_not_finished = not (np.linalg.norm(trajectory[-1, :]- trajectory_goal) <= CONFIG["trajectory_proximity_threshold"] or np.array_equal(trajectory[-1,:],trajectory[-2,:]) or idx > 1e3)
+        
+        # Increase the counter
+        idx = idx + 1
+
     # Return the trajectory
     return trajectory

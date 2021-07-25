@@ -73,7 +73,7 @@ def inverse_kinematics(x, y, elbow_up = True):
 		solutions = np.vstack([theta1, theta2])
 		# Select the solutions based on the configuration preference
 		solution = solutions[:, 1] if elbow_up else solutions[:, 0]
-
+		#? Why there is a solution in the range of [-180,0]
 	return solution
 
 def draw_collision_map(collision_map):

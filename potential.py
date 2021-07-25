@@ -21,10 +21,11 @@ def calculate_potential_map(collision_map, alpha_values, beta_values):
     # Then, find the distances which are from the point cloud to query point, which 
     # is whole map of our configuration space.
     # Keep in mind that we can query more than one point at the same time. 
-    distances, _ = kdt.query(map_grid)
+    distances, _ = kdt.query(map_grid, workers=4)
         
     # Calculate the repulsive potential given by the formula
-    repulsive_potential = 0.5 * CONFIG['repulsion_threshold_distance'] * np.power((1 / distances) - (1 / CONFIG['repulsion_threshold_distance']), 2) 
+    repulsive_potential = 0.5 * CONFIG['repulsion_gain'] * np.power((1 / distances) - (1 / CONFIG['repulsion_threshold_distance']), 2) 
+
     # If a distance is larger than a threshold, then its effect is zero
     repulsive_potential[distances > CONFIG['repulsion_threshold_distance']] = 0
 
