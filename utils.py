@@ -3,6 +3,8 @@ from config import *
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
+import plotly.express as px
+import plotly.graph_objects as go
 
 def cosd(angle_degree):
 	"""
@@ -107,10 +109,125 @@ def draw_potential_map_3d(potential_map, alpha_values, beta_values):
 	fig.add_axes(ax)
 
 	alpha_grid, beta_grid = np.meshgrid(alpha_values, beta_values)	
-	c = ax.plot_surface(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).	T, cmap=cm.magma, linewidth=0, antialiased=True)
+	c = ax.plot_surface(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T, cmap=cm.magma, linewidth=0, antialiased=True)
 	fig.colorbar(c)
 	ax.set_title("Potential Map")
 	ax.set_xlabel("Alpha")
 	ax.set_ylabel("Beta")
 
 	return fig, ax
+
+def draw_collision_map_plotly(collision_map):
+
+	fig = px.scatter(x=collision_map[:, 0], y=collision_map[:, 1])
+	fig.update_layout(xaxis_range=[0, 180], yaxis_range=[0, 360])
+	return fig
+
+def draw_potential_map_plotly(potential_map, alpha_values, beta_values):
+
+	fig = go.Figure(data =
+    go.Contour(x = alpha_values, y = beta_values, z = potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T))
+	fig.update_layout(xaxis_range=[0, 180], yaxis_range=[0, 360])
+
+	return fig
+
+def draw_potential_map_3d_plotly(potential_map, alpha_values, beta_values):
+	
+	fig = go.Figure(data =
+    go.Surface(x = alpha_values, y = beta_values, z = potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T))
+	fig.update_layout(xaxis_range=[0, 180], yaxis_range=[0, 360])
+
+	return fig
+
+
+def draw_collision_map_plotly(collision_map):
+
+	fig = go.Figure()
+	trc = go.Scatter(x=collision_map[:, 0], y=collision_map[:, 1], mode='markers')
+	fig.add_trace(trc)
+
+	fig.update_layout(
+		autosize=False,
+		width=500,
+		height=500,
+		xaxis_range=[0, 180], yaxis_range=[0, 360],
+		xaxis_title = r"$\alpha$",
+		yaxis_title = r"$\beta$",
+		title={
+			'text': "Collision Map",
+			'x' : 0.5,
+			'y' : 1.0,
+			'xanchor': 'center',
+			'yanchor': 'top'}
+	)
+
+	return fig, trc
+
+def draw_potential_map_plotly(potential_map, alpha_values, beta_values):
+
+	fig = go.Figure()
+	trc = go.Contour(x = alpha_values, y = beta_values, z = potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T)
+	fig.add_trace(trc)
+	
+	fig.update_layout(
+		autosize=False,
+		width=500,
+		height=500,
+		xaxis_range=[0, 180], yaxis_range=[0, 360],
+		xaxis_title = r"$\alpha$",
+		yaxis_title = r"$\beta$",
+		title={
+			'text': "Potential Map",
+			'x' : 0.5,
+			'y' : 0.9,
+			'xanchor': 'center',
+			'yanchor': 'top'}
+	)
+	return fig, trc
+
+def draw_potential_map_3d_plotly(potential_map, alpha_values, beta_values):
+	
+
+	fig = go.Figure()
+	trc = go.Surface(x = alpha_values, y = beta_values, z = potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T)
+	fig.add_trace(trc)
+
+	fig.update_layout(
+		autosize=False,
+		width=500,
+		height=500,
+		xaxis_range=[0, 180], yaxis_range=[0, 360],
+		scene = dict(
+		xaxis_title = r"$\alpha$",
+		yaxis_title = r"$\beta$",
+		zaxis_title = "Potential"), 
+		title={
+			'text': "Potential Map 3D",
+			'x' : 0.5,
+			'y' : 0.9,
+			'xanchor': 'center',
+			'yanchor': 'top'}
+	)
+	return fig, trc
+
+def draw_subplots(trc_collision, trc_potential, trc_potential_3d):
+
+	main_fig = go.make_subplots(
+		rows=1, cols=3,
+		subplot_titles=("Collision Map", "Potential Map", "Potential Map 3D"),
+		specs=[[{}, {},{'type': 'surface'}]])
+
+	main_fig.add_trace(trc_collision, row=1, col=1)
+	main_fig.add_trace(trc_potential, row=1, col=2)
+	main_fig.add_trace(trc_potential_3d, row=1, col=3)
+
+	main_fig.update_xaxes(title_text=r"$\alpha$", row=1, col=1, range=[0, 180])
+	main_fig.update_xaxes(title_text=r"$\alpha$", row=1, col=2, range=[0, 180])
+
+	main_fig.update_yaxes(title_text=r"$\beta$", row=1, col=1, range=[0, 360])
+	main_fig.update_yaxes(title_text=r"$\beta$", row=1, col=2, range=[0, 360])
+
+	main_fig.update_scenes(xaxis = dict(title_text=r"Alpha"),
+							yaxis = dict(title_text=r"Beta"),
+							zaxis = dict(title_text="Potential"))
+	return main_fig
