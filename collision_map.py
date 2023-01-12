@@ -1,7 +1,7 @@
 import numpy as np
 from utils import *
 from config import *
-
+import tqdm
 
 def calculate_collision_map():
 	"""
@@ -28,10 +28,10 @@ def calculate_collision_map():
 	# For each alpha and beta values
 
 
-	for (alpha, beta) in map_grid:
+	for (alpha, beta) in tqdm.tqdm(map_grid):
 
 		# Verbose printing
-		print("Alpha = {}\tBeta = {}".format(alpha, beta), end='\r')
+		# print("Alpha = {}\tBeta = {}".format(alpha, beta))	
 
 		# Initialization of the checker variable
 		is_point_collided = False  # Set this to false for every alpha-beta pair
@@ -66,9 +66,9 @@ def calculate_collision_map():
 			# Whether the point is colliding with any of the boundary conditions
 			is_point_collided = is_inside_circle(px, py, CONFIG["obstacle_x"], CONFIG["obstacle_y"], CONFIG["obstacle_radius"] + CONFIG["rubber_band"]) or (px < 0) or (py < 0) or (py > 100) or (px > 100) 
 
-		if is_point_collided:  
+			if is_point_collided:  
 			# If the link 2 violates any of the boundary conditions, terminate the link 2 check
-			break
+				break
 
 		if is_point_collided:  
 		# If link 2 collides with the given alpha-beta pair, then go for the next pair

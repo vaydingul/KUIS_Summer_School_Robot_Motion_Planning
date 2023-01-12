@@ -67,9 +67,12 @@ def inverse_kinematics(x, y, elbow_up = True):
 		
 		theta1 = np.array([beta + psi, beta - psi])
 
+		
+
 		# Solutions for the elbow up and elbow down situations
-		solutions = np.vstack([theta1, theta2])
+		solutions = np.vstack([theta1, theta2]) % (2 * np.pi)
+
 		# Select the solutions based on the configuration preference
-		solution = solutions[:, 1] if elbow_up else solutions[:, 0]
+		solution = solutions[:, 1 ] % (2 * np.pi) if not elbow_up else solutions[:, 0] % (2 * np.pi)
 
 	return solution

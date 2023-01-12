@@ -46,12 +46,12 @@ def calculate_trajectory(trajectory_start: np.ndarray, trajectory_goal: np.ndarr
         distances[distances > p0] = np.inf
 
         # Calculate the repulsive potential given by the formula
-        local_repulsive_potentials = 0.5 * p0 * np.power((1 / distances) - (1 / p0), 2) 
+        local_repulsive_potentials = 0.5 * CONFIG['repulsion_gain'] * np.power((1 / distances) - (1 / p0), 2) 
 
         # Calculate the distances between every point and the goal point
         local_attraction_distances = np.sum((local_map_grid - trajectory_goal) ** 2, axis=1)
         # Calculate the attractive potentials as if it is a spring acted on a mass
-        local_attractive_potentials = 0.5 *  CONFIG["attraction_gain"] * local_attraction_distances;
+        local_attractive_potentials = 0.5 *  CONFIG["attraction_gain"] * local_attraction_distances
 
         # Calculate the total potentials by summing up repulsive and attractive potential
         local_potential_map = local_repulsive_potentials + local_attractive_potentials
@@ -70,3 +70,4 @@ def calculate_trajectory(trajectory_start: np.ndarray, trajectory_goal: np.ndarr
         idx = idx + 1
     # Return the trajectory
     return trajectory
+

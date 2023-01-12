@@ -31,7 +31,7 @@ def calculate_potential_map(collision_map, alpha_values, beta_values):
     distances[distances > p0] = np.inf
 
     # Calculate the repulsive potential given by the formula
-    repulsive_potential = 0.5 * p0 * np.power((1 / distances) - (1 / p0), 2) 
+    repulsive_potential = 0.5 * CONFIG['repulsion_gain'] * np.power((1 / distances) - (1 / p0), 2) 
 
     # Calculate the corresponding joint angles for the goal world coordinates
     goal_theta_degree = np.rad2deg(inverse_kinematics(CONFIG["goal_x"], CONFIG["goal_y"], elbow_up=CONFIG['goal_elbow_up']))
@@ -53,8 +53,16 @@ def calculate_potential_map(collision_map, alpha_values, beta_values):
 
 def draw_potential_map(potential_map, alpha_values, beta_values):
 
-    plt.figure()
+    _, ax = plt.subplots()
+    ax.set_title("Potential Map")
+    ax.set_xlabel("alpha")
+    ax.set_ylabel("beta")
+
+    start_theta_degree = np.rad2deg(inverse_kinematics(CONFIG["start_x"], CONFIG["start_y"], elbow_up=CONFIG['start_elbow_up'])) 
+    goal_theta_degree = np.rad2deg(inverse_kinematics(CONFIG["goal_x"], CONFIG["goal_y"], elbow_up=CONFIG['goal_elbow_up']))
+
     alpha_grid, beta_grid = np.meshgrid(alpha_values, beta_values)
-    #ax = plt.axes(projection='3d')
-    plt.contour(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T, 60, cmap='hot')
-    #plt.show()
+    ax.contour(alpha_grid, beta_grid, potential_map.reshape((alpha_values.shape[0], beta_values.shape[0])).T, 60, cmap='hot')
+    ax.plot(start_theta_degree[0], start_theta_degree[1], 'bo', label="start", markersize=10)
+    ax.plot(goal_theta_degree[0], goal_theta_degree[1], 'go', label="goal", markersize=10)
+    ax.legend()
