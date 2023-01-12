@@ -1,3 +1,5 @@
+{{badge https://colab.research.google.com/drive/1bQN3pF2ijRC-mpllqRBaNvI67GU2RvTo?usp=sharing}}
+
 # Robot Motion Planning
 Determining where to go without hitting obstacles is one of the key problems in the area of robotics. There has been couple of approaches to solve the problem of motion planning. Cell decompositions, voronoi diagrams and potential fields can be given as examples to these approaches. 
 
